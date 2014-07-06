@@ -1,6 +1,7 @@
-package com.github.jagyamanashi.notification1;
+package com.github.jagyamanashi.notification3;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,24 +54,31 @@ public class MainActivity extends Activity {
     }
 
     private void showNotification() {
-        int notificationId = 001;
+        int notificationId = 003;
         String eventTitle = "Event Title";
         String eventLocation = "Event Location";
 
-        Intent viewIntent = new Intent(this, MainActivity.class);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+        Intent actionIntent = new Intent(this, MainActivity.class);
+        PendingIntent actionPendingIntent =
+                PendingIntent.getActivity(this, 0, actionIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder notificationBuilder =
+        NotificationCompat.Action action =
+                new NotificationCompat.Action.Builder(R.drawable.ic_action_smile,
+                        getString(R.string.hello_world), actionPendingIntent)
+                        .build();
+
+        Notification notification =
                 new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_stat_smile)
-                .setContentTitle(eventTitle)
-                .setContentText(eventLocation)
-                .setContentIntent(viewPendingIntent);
+                        .setSmallIcon(R.drawable.ic_stat_smile)
+                        .setContentTitle(eventTitle)
+                        .setContentText(eventLocation)
+                        .extend(new NotificationCompat.WearableExtender().addAction(action))
+                        .build();
 
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
 
-        notificationManager.notify(notificationId, notificationBuilder.build());
+        notificationManager.notify(notificationId, notification);
     }
 }
